@@ -1,0 +1,123 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.tokii</groupId>
+  <artifactId>spring-mvc</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <properties>
+		<jettyVersion>9.0.2.v20130417</jettyVersion>
+		<spring-version>4.3.3.RELEASE</spring-version>
+		<jackson.version>2.8.8</jackson.version>
+		<slf4j.version>1.7.5</slf4j.version>
+	</properties>
+	
+	<dependencies>
+    	<!-- web 服务 -->
+    	<dependency>
+		    <groupId>org.eclipse.jetty</groupId>
+		    <artifactId>jetty-server</artifactId>
+		    <version>${jettyVersion}</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.eclipse.jetty</groupId>
+		    <artifactId>jetty-webapp</artifactId>
+		    <version>${jettyVersion}</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.eclipse.jetty</groupId>
+		    <artifactId>jetty-continuation</artifactId>
+		    <version>${jettyVersion}</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.eclipse.jetty</groupId>
+		    <artifactId>jetty-jsp</artifactId>
+		    <version>${jettyVersion}</version>
+		</dependency>
+    	<!-- https://mvnrepository.com/artifact/org.springframework/spring-webmvc -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${spring-version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- 工具包 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.4</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+        </dependency>
+        <dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>  
+		    <groupId>org.slf4j</groupId>  
+		    <artifactId>slf4j-simple</artifactId>  
+		    <version>1.7.25</version>  
+		</dependency> 
+    </dependencies>
+    <build>
+    	<plugins>
+    		<plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-shade-plugin</artifactId>
+			    <version>2.4.1</version>
+			    <executions>
+			        <execution>  
+			            <phase>package</phase>
+			           <goals>
+			                <goal>shade</goal>
+			            </goals>
+			            <configuration>
+			            	<filters>
+	                            <filter>
+	                                <artifact>*:*</artifact>
+	                                <excludes>
+	                                    <exclude>META-INF/*.SF</exclude>
+	                                    <exclude>META-INF/*.DSA</exclude>
+	                                    <exclude>META-INF/*.RSA</exclude>
+	                                </excludes>
+	                            </filter>
+	                        </filters>
+			            
+			                <transformers>
+			                    <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+			                        <mainClass>cn.web.WebApplication</mainClass>
+			                    </transformer>
+			                    <!-- Spring 包中的META-INF中同名资源会重叠，使用此方式追加到同名文件中 -->
+			                    <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+			                        <resource>META-INF/spring.handlers</resource>
+			                    </transformer>
+			                    <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+			                        <resource>META-INF/spring.schemas</resource>
+			                    </transformer>
+			                </transformers>
+			            </configuration>
+			        </execution>
+			    </executions>
+			</plugin>
+    	</plugins>
+    </build>
+</project>
